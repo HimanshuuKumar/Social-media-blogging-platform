@@ -1,9 +1,41 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Home, Compass, BookOpen, User, Plus, LogIn } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const Sidebar = () => {
-  const token = localStorage.getItem("token");
+  const navigate = useNavigate();
+  const [token, setToken] = useState(localStorage.getItem("token"));
+
+  // Listen for token changes
+  useEffect(() => {
+    const handleStorageChange = () => {
+      setToken(localStorage.getItem("token"));
+    };
+
+    // Listen for custom event (you'll dispatch this on login)
+    const handleLoginEvent = () => {
+      setToken(localStorage.getItem("token"));
+    };
+
+    window.addEventListener("storage", handleStorageChange);
+    window.addEventListener("login", handleLoginEvent);
+    window.addEventListener("logout", handleLoginEvent);
+
+    return () => {
+      window.removeEventListener("storage", handleStorageChange);
+      window.removeEventListener("login", handleLoginEvent);
+      window.removeEventListener("logout", handleLoginEvent);
+    };
+  }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    setToken(null);
+    // Dispatch custom event
+    window.dispatchEvent(new Event("logout"));
+    navigate("/");
+  };
+
   return (
     <aside
       className="
@@ -229,10 +261,7 @@ const Sidebar = () => {
             </Link>
           ) : (
             <button
-              onClick={() => {
-                localStorage.removeItem("token");
-                window.location.href = "/";
-              }}
+              onClick={handleLogout}
               className="
     flex items-center
     gap-4
@@ -267,21 +296,6 @@ const Sidebar = () => {
       </div>
       {/* BOTTOM USER SECTION */}
     </aside>
-  );
-};
-
-const SidebarItem = ({ icon, label, active }) => {
-  return (
-    <div
-      className={`flex items-center gap-3 px-3 py-2 rounded-lg cursor-pointer transition ${
-        active
-          ? "bg-purple-50 text-purple-600 font-medium"
-          : "text-gray-600 hover:bg-gray-100"
-      }`}
-    >
-      {icon}
-      <span className="text-sm">{label}</span>
-    </div>
   );
 };
 
