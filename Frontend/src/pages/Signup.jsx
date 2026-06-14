@@ -39,7 +39,7 @@ const Signup = () => {
 
     try {
       const res = await axios.post(
-        "http://localhost:4000/api/users/signup",
+        "https://internship-resume.onrender.com/api/users/signup",
         form,
       );
 
