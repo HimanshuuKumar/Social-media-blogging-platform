@@ -50,7 +50,7 @@ const BlogDetails = () => {
         setError(null);
 
         const response = await axios.get(
-          `http://localhost:4000/api/blogs/${id}`,
+          `https://internship-resume.onrender.com/api/blogs/${id}`,
           {
             headers: token ? { Authorization: `Bearer ${token}` } : {},
           },
