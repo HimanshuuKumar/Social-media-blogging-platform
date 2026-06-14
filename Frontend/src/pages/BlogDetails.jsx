@@ -29,7 +29,6 @@ const BlogDetails = () => {
   const [showFAB, setShowFAB] = useState(false);
   const token = localStorage.getItem("token");
 
-  // Reading progress and FAB visibility
   useEffect(() => {
     const handleScroll = () => {
       const windowHeight = window.innerHeight;
@@ -44,7 +43,6 @@ const BlogDetails = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Fetch blog details using id
   useEffect(() => {
     const fetchBlog = async () => {
       try {
@@ -52,11 +50,10 @@ const BlogDetails = () => {
         setError(null);
 
         const response = await axios.get(
-          `https://internship-resume.onrender.com/api/blogs/${id}`,
+          `http://localhost:4000/api/blogs/${id}`,
           {
             headers: token ? { Authorization: `Bearer ${token}` } : {},
           },
-          
         );
 
         if (response.data.success) {
@@ -127,17 +124,17 @@ const BlogDetails = () => {
   };
 
   const LoadingSkeleton = () => (
-    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
-      <div className="px-4 py-6 sm:py-12 sm:px-6 lg:px-8 max-w-4xl mx-auto">
+    <div className="min-h-screen bg-white">
+      <div className="max-w-3xl mx-auto px-4 py-6">
         <div className="animate-pulse">
-          <div className="h-7 w-28 bg-gray-200 rounded-lg mb-6"></div>
-          <div className="h-10 w-full bg-gray-200 rounded-2xl mb-4"></div>
-          <div className="h-10 w-5/6 bg-gray-200 rounded-2xl mb-8"></div>
-          <div className="flex items-center gap-3 mb-8">
+          <div className="h-6 w-24 bg-gray-200 rounded mb-6"></div>
+          <div className="h-8 w-full bg-gray-200 rounded mb-3"></div>
+          <div className="h-8 w-5/6 bg-gray-200 rounded mb-6"></div>
+          <div className="flex items-center gap-3 mb-6">
             <div className="h-10 w-10 rounded-full bg-gray-200"></div>
             <div className="flex-1">
-              <div className="h-3 w-28 bg-gray-200 rounded mb-2"></div>
-              <div className="h-2 w-40 bg-gray-200 rounded"></div>
+              <div className="h-3 w-32 bg-gray-200 rounded mb-2"></div>
+              <div className="h-2 w-48 bg-gray-200 rounded"></div>
             </div>
           </div>
           <div className="space-y-3">
@@ -154,10 +151,10 @@ const BlogDetails = () => {
 
   if (error || !blog) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white flex items-center justify-center px-4">
+      <div className="min-h-screen bg-white flex items-center justify-center px-4">
         <div className="text-center">
           <div className="text-6xl mb-4">📖</div>
-          <h2 className="text-2xl font-serif font-bold text-gray-900 mb-3">
+          <h2 className="text-2xl font-bold text-gray-900 mb-3">
             Blog not found
           </h2>
           <p className="text-gray-600 mb-6 max-w-xs mx-auto">
@@ -166,7 +163,7 @@ const BlogDetails = () => {
           </p>
           <button
             onClick={() => navigate("/")}
-            className="inline-flex items-center gap-2 px-5 py-2.5 bg-purple-600 text-white rounded-xl hover:bg-purple-700 transition shadow-lg"
+            className="inline-flex items-center gap-2 px-5 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
           >
             <ArrowLeft size={18} />
             Back to Home
@@ -177,348 +174,437 @@ const BlogDetails = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
-      {/* Reading Progress Bar */}
-      <div className="fixed top-0 left-0 w-full h-0.5 bg-purple-100 z-50">
-        <div
-          className="h-full bg-gradient-to-r from-purple-600 to-pink-600 transition-all duration-100"
-          style={{ width: `${showProgress}%` }}
-        ></div>
-      </div>
+    <>
+      <style>{`
+        /* Global styles to prevent horizontal scroll */
+        * {
+          max-width: 100%;
+          box-sizing: border-box;
+        }
+        
+        html, body {
+          overflow-x: hidden !important;
+          width: 100% !important;
+          position: relative !important;
+        }
+        
+        /* Article content styles */
+        .blog-content {
+          width: 100%;
+          max-width: 100%;
+          overflow-x: hidden !important;
+        }
+        
+        .blog-content * {
+          max-width: 100% !important;
+          box-sizing: border-box !important;
+        }
+        
+        /* Images */
+        .blog-content img {
+          max-width: 100% !important;
+          height: auto !important;
+          display: block !important;
+        }
+        
+        /* Tables - make scrollable */
+        .blog-content table {
+          display: block !important;
+          width: 100% !important;
+          overflow-x: auto !important;
+          -webkit-overflow-scrolling: touch !important;
+        }
+        
+        /* Code blocks */
+        .blog-content pre {
+          max-width: 100% !important;
+          overflow-x: auto !important;
+          white-space: pre-wrap !important;
+          word-wrap: break-word !important;
+          background: #1f2937;
+          padding: 1rem;
+          border-radius: 0.5rem;
+        }
+        
+        .blog-content code {
+          white-space: pre-wrap !important;
+          word-wrap: break-word !important;
+        }
+        
+        /* Iframes and videos */
+        .blog-content iframe,
+        .blog-content video,
+        .blog-content embed {
+          max-width: 100% !important;
+          width: 100% !important;
+          height: auto !important;
+        }
+        
+        /* Blockquotes */
+        .blog-content blockquote {
+          word-wrap: break-word !important;
+          overflow-wrap: break-word !important;
+        }
+        
+        /* All text elements */
+        .blog-content p,
+        .blog-content h1,
+        .blog-content h2,
+        .blog-content h3,
+        .blog-content h4,
+        .blog-content h5,
+        .blog-content h6,
+        .blog-content li,
+        .blog-content span,
+        .blog-content a {
+          word-wrap: break-word !important;
+          overflow-wrap: break-word !important;
+        }
+      `}</style>
 
-      {/* Navigation Bar - Mobile Optimized */}
-      <nav className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-gray-100">
-        <div className="px-4 py-3 flex items-center justify-between">
-          <button
-            onClick={() => navigate("/")}
-            className="flex items-center gap-1.5 text-gray-600 hover:text-purple-600 transition"
-          >
-            <ArrowLeft size={18} />
-            <span className="text-sm font-medium">Back</span>
-          </button>
-
-          <div className="flex items-center gap-2">
-            <button
-              onClick={handleLike}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full transition-all duration-200 ${
-                liked
-                  ? "bg-red-50 text-red-600"
-                  : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-              }`}
-            >
-              <Heart size={16} fill={liked ? "currentColor" : "none"} />
-              <span className="text-sm font-medium">
-                {blog.likes?.length || blog.likes || 0}
-              </span>
-            </button>
-
-            <button
-              onClick={handleShare}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-gray-100 text-gray-700 hover:bg-gray-200 transition"
-            >
-              <Share2 size={16} />
-              <span className="text-sm font-medium hidden sm:inline">
-                Share
-              </span>
-            </button>
-          </div>
-        </div>
-      </nav>
-
-      {/* Hero Section - Mobile Optimized */}
-      <div className="border-b border-gray-100 bg-white">
-        <div className="px-4 py-6 sm:py-8 md:py-12 max-w-4xl mx-auto">
-          {/* Category/Tags */}
-          <div className="flex flex-wrap gap-1.5 mb-4">
-            {blog.category && (
-              <Link
-                to={`/category/${blog.category}`}
-                className="inline-flex items-center gap-1 px-2.5 py-1 bg-purple-50 text-purple-700 text-xs font-medium rounded-full"
-              >
-                <Tag size={11} />
-                {blog.category}
-              </Link>
-            )}
-            {blog.tags?.slice(0, 3).map((tag) => (
-              <Link
-                key={tag}
-                to={`/tag/${tag}`}
-                className="px-2.5 py-1 bg-gray-100 text-gray-700 text-xs font-medium rounded-full"
-              >
-                #{tag}
-              </Link>
-            ))}
-          </div>
-
-          {/* Title */}
-          <h1 className="font-serif text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-5 leading-tight">
-            {blog.title}
-          </h1>
-
-          {/* Author Info - Mobile Optimized */}
-          <div className="flex flex-col gap-4 py-4 border-t border-b border-gray-100">
-            <div className="flex items-center gap-3">
-              {blog.author?.profilePic ? (
-                <img
-                  src={blog.author.profilePic}
-                  alt={blog.author.name}
-                  className="h-10 w-10 rounded-full object-cover ring-3 ring-purple-50"
-                />
-              ) : (
-                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-purple-500 to-pink-500 text-white font-semibold text-base">
-                  {blog.author?.name?.charAt(0) || "A"}
-                </div>
-              )}
-              <div className="flex-1">
-                <p className="font-semibold text-gray-900 text-sm">
-                  {blog.author?.name || "Anonymous Author"}
-                </p>
-                <div className="flex flex-wrap items-center gap-2 text-xs text-gray-500 mt-0.5">
-                  <span className="flex items-center gap-1">
-                    <Calendar size={11} />
-                    {formatDate(blog.publishedAt || blog.createdAt)}
-                  </span>
-                  <span className="flex items-center gap-1">
-                    <Clock size={11} />
-                    {getReadingTime(blog.content)} min read
-                  </span>
-                  <span className="flex items-center gap-1">
-                    <Eye size={11} />
-                    {blog.views || 0} views
-                  </span>
-                </div>
-              </div>
-            </div>
-
-            <button className="flex items-center justify-center gap-2 px-4 py-2 bg-purple-600 text-white rounded-full text-sm font-medium hover:bg-purple-700 transition shadow-md w-full sm:w-auto">
-              <User size={14} />
-              Follow Author
-            </button>
-          </div>
-        </div>
-      </div>
-
-      {/* Thumbnail - Mobile Optimized */}
-      {blog.thumbnail && (
-        <div className="w-full bg-gradient-to-b from-white to-gray-100">
-          <div className="px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto -mt-6">
-            <div className="relative overflow-hidden rounded-xl shadow-xl bg-gray-100">
-              <div className="relative w-full pt-[56.25%]">
-                <img
-                  src={blog.thumbnail}
-                  alt={blog.title}
-                  className="absolute top-0 left-0 w-full h-full object-cover"
-                  onError={(e) => {
-                    e.target.src =
-                      "https://via.placeholder.com/1200x600?text=No+Image";
-                    e.target.onerror = null;
-                  }}
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Main Content - Mobile Optimized */}
-      <div className="px-4 py-8 sm:py-12 max-w-3xl mx-auto">
-        {/* Article Content */}
-        <article className="prose prose-sm max-w-none">
+      <div className="min-h-screen bg-white" style={{ overflowX: "hidden" }}>
+        {/* Reading Progress Bar */}
+        <div className="fixed top-0 left-0 w-full h-1 bg-gray-100 z-50">
           <div
-            className="
-              font-serif
-              text-gray-800
-              leading-relaxed
-              space-y-4
-              [&>h1]:text-2xl [&>h1]:font-bold [&>h1]:text-gray-900 [&>h1]:mt-8 [&>h1]:mb-4
-              [&>h2]:text-xl [&>h2]:font-bold [&>h2]:text-gray-900 [&>h2]:mt-6 [&>h2]:mb-3
-              [&>h3]:text-lg [&>h3]:font-semibold [&>h3]:text-gray-900 [&>h3]:mt-5 [&>h3]:mb-2
-              [&>h4]:text-base [&>h4]:font-semibold [&>h4]:text-gray-900 [&>h4]:mt-4 [&>h4]:mb-2
-              [&>p]:text-gray-700 [&>p]:leading-relaxed [&>p]:mb-4 [&>p]:text-sm
-              [&>a]:text-purple-600 [&>a]:underline
-              [&>strong]:text-gray-900 [&>strong]:font-semibold
-              [&>em]:italic [&>em]:text-gray-600
-              [&>code]:font-mono [&>code]:text-xs [&>code]:bg-gray-100 [&>code]:px-1.5 [&>code]:py-0.5 [&>code]:rounded
-              [&>pre]:bg-gray-900 [&>pre]:rounded-xl [&>pre]:p-4 [&>pre]:overflow-x-auto [&>pre]:my-6
-              [&>pre>code]:bg-transparent [&>pre>code]:text-gray-100 [&>pre>code]:p-0 [&>pre>code]:text-xs
-              [&>ul]:list-disc [&>ul]:pl-5 [&>ul]:space-y-1.5 [&>ul]:my-4
-              [&>ol]:list-decimal [&>ol]:pl-5 [&>ol]:space-y-1.5 [&>ol]:my-4
-              [&>li]:text-gray-700 [&>li]:leading-relaxed [&>li]:text-sm
-              [&>blockquote]:border-l-4 [&>blockquote]:border-purple-500 [&>blockquote]:pl-4 [&>blockquote]:italic [&>blockquote]:text-gray-600 [&>blockquote]:my-6 [&>blockquote]:text-sm
-              [&>img]:rounded-xl [&>img]:shadow-lg [&>img]:my-6 [&>img]:w-full
-              [&>figure]:my-6 [&>figcaption]:text-center [&>figcaption]:text-xs [&>figcaption]:text-gray-500 [&>figcaption]:mt-2
-              [&>hr]:my-8 [&>hr]:border-gray-200
-              [&>table]:w-full [&>table]:border-collapse [&>table]:my-6 [&>table]:text-xs
-              [&>th]:border [&>th]:border-gray-300 [&>th]:p-2 [&>th]:bg-gray-100 [&>th]:font-semibold
-              [&>td]:border [&>td]:border-gray-300 [&>td]:p-2
-            "
-            dangerouslySetInnerHTML={{ __html: blog.content }}
-          />
-        </article>
-
-        {/* Engagement Section - Mobile Optimized */}
-        <div className="mt-10 flex flex-col sm:flex-row items-center gap-3 py-6 border-t border-b border-gray-200">
-          <button
-            onClick={handleLike}
-            className={`flex items-center justify-center gap-2 px-6 py-2.5 rounded-full transition-all duration-200 w-full sm:w-auto ${
-              liked
-                ? "bg-red-500 text-white shadow-lg"
-                : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-            }`}
-          >
-            <Heart size={18} fill={liked ? "currentColor" : "none"} />
-            <span className="font-medium">
-              {blog.likes?.length || blog.likes || 0} Likes
-            </span>
-          </button>
-
-          <button
-            onClick={handleSave}
-            className={`flex items-center justify-center gap-2 px-6 py-2.5 rounded-full transition-all duration-200 w-full sm:w-auto ${
-              saved
-                ? "bg-purple-600 text-white"
-                : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-            }`}
-          >
-            <Bookmark size={18} fill={saved ? "currentColor" : "none"} />
-            <span>{saved ? "Saved" : "Save"}</span>
-          </button>
-
-          <button
-            onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-            className="flex items-center justify-center gap-2 px-6 py-2.5 rounded-full bg-gray-100 text-gray-700 hover:bg-gray-200 transition w-full sm:w-auto"
-          >
-            <ChevronUp size={18} />
-            <span>Top</span>
-          </button>
+            className="h-full bg-blue-600 transition-all duration-100"
+            style={{ width: `${showProgress}%` }}
+          ></div>
         </div>
 
-        {/* Subscribe Section - Mobile Optimized */}
-        <div className="mt-12">
-          <div className="bg-gradient-to-br from-purple-50 via-pink-50 to-purple-50 rounded-2xl p-6 text-center shadow-md">
-            <div className="inline-flex p-2 bg-white rounded-full shadow-md mb-4">
-              <Bell className="w-5 h-5 text-purple-600" />
-            </div>
-            <h3 className="text-xl font-serif font-bold text-gray-900 mb-2">
-              Never miss a story
-            </h3>
-            <p className="text-sm text-gray-600 mb-5 max-w-xs mx-auto">
-              Get stories from{" "}
-              <span className="font-semibold text-purple-600">
-                {blog.author?.name || "this writer"}
-              </span>{" "}
-              in your inbox
-            </p>
-            <div className="flex flex-col gap-3">
-              <input
-                type="email"
-                placeholder="Enter your email"
-                className="px-4 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent text-gray-900 placeholder-gray-400 text-sm"
-              />
+        {/* Navigation Bar */}
+        <nav className="sticky top-0 z-40 bg-white border-b border-gray-100">
+          <div className="w-full px-4 py-3 flex items-center justify-between">
+            <button
+              onClick={() => navigate("/")}
+              className="flex items-center gap-2 text-gray-600 hover:text-blue-600 transition p-2 rounded-lg hover:bg-gray-50"
+            >
+              <ArrowLeft size={20} />
+              <span className="hidden sm:inline text-sm font-medium">Back</span>
+            </button>
+
+            <div className="flex items-center gap-2">
               <button
-                onClick={handleSubscribe}
-                className={`px-5 py-2.5 rounded-xl font-medium transition-all duration-200 flex items-center justify-center gap-2 text-sm ${
-                  subscribed
-                    ? "bg-green-600 text-white"
-                    : "bg-purple-600 text-white hover:bg-purple-700 shadow-md"
+                onClick={handleLike}
+                className={`flex items-center gap-2 px-3 py-1.5 rounded-lg transition-all duration-200 ${
+                  liked
+                    ? "bg-red-50 text-red-500"
+                    : "text-gray-600 hover:bg-gray-50"
                 }`}
               >
-                <Mail size={15} />
-                {subscribed ? "Subscribed! ✓" : "Subscribe"}
+                <Heart size={18} fill={liked ? "currentColor" : "none"} />
+                <span className="text-sm font-medium">
+                  {blog.likes?.length || blog.likes || 0}
+                </span>
+              </button>
+
+              <button
+                onClick={handleSave}
+                className={`p-2 rounded-lg transition-all duration-200 ${
+                  saved ? "text-blue-600" : "text-gray-600 hover:bg-gray-50"
+                }`}
+              >
+                <Bookmark size={18} fill={saved ? "currentColor" : "none"} />
+              </button>
+
+              <button
+                onClick={handleShare}
+                className="p-2 rounded-lg text-gray-600 hover:bg-gray-50 transition"
+              >
+                <Share2 size={18} />
+              </button>
+            </div>
+          </div>
+        </nav>
+
+        {/* Hero Section */}
+        <div className="border-b border-gray-100">
+          <div className="w-full px-4 py-6 md:max-w-3xl md:mx-auto">
+            {/* Category/Tags */}
+            <div className="flex flex-wrap gap-2 mb-4">
+              {blog.category && (
+                <Link
+                  to={`/category/${blog.category}`}
+                  className="inline-flex items-center gap-1 px-2.5 py-1 bg-blue-50 text-blue-700 text-xs font-medium rounded-full"
+                >
+                  <Tag size={12} />
+                  {blog.category}
+                </Link>
+              )}
+              {blog.tags?.slice(0, 3).map((tag, idx) => (
+                <Link
+                  key={idx}
+                  to={`/tag/${tag}`}
+                  className="px-2.5 py-1 bg-gray-100 text-gray-700 text-xs font-medium rounded-full hover:bg-gray-200 transition"
+                >
+                  #{tag}
+                </Link>
+              ))}
+            </div>
+
+            {/* Title */}
+            <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 mb-4 leading-tight break-words">
+              {blog.title}
+            </h1>
+
+            {/* Author Info */}
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 py-4 border-t border-b border-gray-100">
+              <div className="flex items-center gap-3">
+                {blog.author?.profilePic ? (
+                  <img
+                    src={blog.author.profilePic}
+                    alt={blog.author.name}
+                    className="h-10 w-10 rounded-full object-cover"
+                  />
+                ) : (
+                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-blue-600 text-white font-semibold text-sm">
+                    {blog.author?.name?.charAt(0) || "A"}
+                  </div>
+                )}
+                <div>
+                  <p className="font-semibold text-gray-900 text-sm">
+                    {blog.author?.name || "Anonymous Author"}
+                  </p>
+                  <div className="flex flex-wrap items-center gap-2 text-xs text-gray-500">
+                    <span className="flex items-center gap-1">
+                      <Calendar size={12} />
+                      {formatDate(blog.publishedAt || blog.createdAt)}
+                    </span>
+                    <span>•</span>
+                    <span className="flex items-center gap-1">
+                      <Clock size={12} />
+                      {getReadingTime(blog.content)} min read
+                    </span>
+                    <span>•</span>
+                    <span className="flex items-center gap-1">
+                      <Eye size={12} />
+                      {blog.views || 0} views
+                    </span>
+                  </div>
+                </div>
+              </div>
+              <button className="flex items-center justify-center gap-2 px-4 py-1.5 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700 transition">
+                <User size={14} />
+                Follow Author
               </button>
             </div>
           </div>
         </div>
 
-        {/* Author Bio - Mobile Optimized */}
-        {blog.author && (
-          <div className="mt-12 p-5 bg-white rounded-2xl border border-gray-200 shadow-sm">
-            <div className="flex flex-col items-center text-center sm:flex-row sm:text-left gap-4">
-              {blog.author.profilePic ? (
-                <img
-                  src={blog.author.profilePic}
-                  alt={blog.author.name}
-                  className="h-16 w-16 rounded-full object-cover ring-3 ring-purple-100"
-                />
-              ) : (
-                <div className="flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-purple-500 to-pink-500 text-white text-xl font-semibold">
-                  {blog.author.name?.charAt(0) || "A"}
-                </div>
-              )}
-              <div className="flex-1">
-                <h3 className="text-lg font-serif font-bold text-gray-900 mb-1">
-                  {blog.author.name}
-                </h3>
-                <p className="text-sm text-gray-600 leading-relaxed mb-3">
-                  {blog.author.bio ||
-                    "Passionate writer sharing insights and stories about technology, life, and everything in between."}
-                </p>
-                <div className="flex flex-col sm:flex-row gap-2">
-                  <button
-                    onClick={handleSubscribe}
-                    className="inline-flex items-center justify-center gap-2 px-4 py-1.5 bg-purple-600 text-white rounded-lg text-sm font-medium hover:bg-purple-700 transition"
+        {/* Thumbnail */}
+        {blog.thumbnail && (
+          <div className="w-full px-4 py-6 md:max-w-4xl md:mx-auto">
+            <img
+              src={blog.thumbnail}
+              alt={blog.title}
+              className="w-full object-cover rounded-xl shadow-lg"
+              style={{ maxHeight: "500px" }}
+              onError={(e) => {
+                e.target.src =
+                  "https://via.placeholder.com/1200x600?text=No+Image";
+                e.target.onerror = null;
+              }}
+            />
+          </div>
+        )}
+
+        {/* Main Content */}
+        <div className="w-full px-4 py-6 md:max-w-3xl md:mx-auto">
+          <article className="blog-content w-full">
+            <div
+              className="
+                text-gray-800
+                text-base sm:text-lg
+                leading-relaxed
+                w-full
+                
+                /* Headings */
+                [&>h1]:text-2xl [&>h1]:sm:text-3xl [&>h1]:md:text-4xl [&>h1]:font-bold 
+                [&>h1]:text-gray-900 [&>h1]:mt-8 [&>h1]:mb-4 [&>h1]:leading-tight [&>h1]:break-words
+                
+                [&>h2]:text-xl [&>h2]:sm:text-2xl [&>h2]:md:text-3xl [&>h2]:font-bold 
+                [&>h2]:text-gray-900 [&>h2]:mt-6 [&>h2]:mb-3 [&>h2]:leading-tight [&>h2]:break-words
+                
+                [&>h3]:text-lg [&>h3]:sm:text-xl [&>h3]:md:text-2xl [&>h3]:font-bold 
+                [&>h3]:text-gray-900 [&>h3]:mt-5 [&>h3]:mb-2.5 [&>h3]:break-words
+                
+                [&>h4]:text-base [&>h4]:sm:text-lg [&>h4]:md:text-xl [&>h4]:font-semibold 
+                [&>h4]:text-gray-900 [&>h4]:mt-4 [&>h4]:mb-2 [&>h4]:break-words
+                
+                /* Paragraphs */
+                [&>p]:text-gray-800 [&>p]:mb-5 [&>p]:leading-relaxed [&>p]:break-words
+                
+                /* Links */
+                [&>a]:text-blue-600 [&>a]:underline [&>a]:break-words
+                
+                /* Lists */
+                [&>ul]:list-disc [&>ul]:pl-5 [&>ul]:sm:pl-6 [&>ul]:my-5 [&>ul]:space-y-2
+                [&>ol]:list-decimal [&>ol]:pl-5 [&>ol]:sm:pl-6 [&>ol]:my-5 [&>ol]:space-y-2
+                [&>li]:text-gray-800 [&>li]:mb-1 [&>li]:break-words
+                
+                /* Blockquotes */
+                [&>blockquote]:border-l-4 [&>blockquote]:border-blue-600 [&>blockquote]:pl-4 
+                [&>blockquote]:sm:pl-5 [&>blockquote]:italic [&>blockquote]:text-gray-600 
+                [&>blockquote]:my-6 [&>blockquote]:text-sm [&>blockquote]:sm:text-base
+                [&>blockquote]:break-words
+                
+                /* Images */
+                [&>img]:max-w-full [&>img]:h-auto [&>img]:rounded-lg [&>img]:shadow-md 
+                [&>img]:my-6
+                
+                /* Horizontal Rule */
+                [&>hr]:my-8 [&>hr]:border-gray-200
+              "
+              dangerouslySetInnerHTML={{ __html: blog.content }}
+            />
+          </article>
+
+          {/* Tags Section */}
+          {blog.tags && blog.tags.length > 0 && (
+            <div className="mt-8 pt-6 border-t border-gray-100">
+              <h3 className="text-sm font-semibold text-gray-900 mb-3">Tags</h3>
+              <div className="flex flex-wrap gap-2">
+                {blog.tags.map((tag, idx) => (
+                  <Link
+                    key={idx}
+                    to={`/tag/${tag}`}
+                    className="px-3 py-1.5 bg-gray-100 text-gray-700 text-sm rounded-lg hover:bg-gray-200 transition"
                   >
-                    <Mail size={13} />
-                    Subscribe
-                  </button>
-                  <button className="inline-flex items-center justify-center gap-2 px-4 py-1.5 bg-gray-100 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-200 transition">
-                    <User size={13} />
-                    View Profile
-                  </button>
+                    #{tag}
+                  </Link>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Engagement Section */}
+          <div className="mt-8 flex flex-wrap items-center gap-3 py-6 border-t border-b border-gray-100">
+            <button
+              onClick={handleLike}
+              className={`flex items-center gap-2 px-5 py-2 rounded-full transition-all duration-200 ${
+                liked
+                  ? "bg-red-500 text-white shadow-md"
+                  : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+              }`}
+            >
+              <Heart size={18} fill={liked ? "currentColor" : "none"} />
+              <span className="font-medium text-sm sm:text-base">
+                {blog.likes?.length || blog.likes || 0} Likes
+              </span>
+            </button>
+
+            <button
+              onClick={handleSave}
+              className={`flex items-center gap-2 px-5 py-2 rounded-full transition-all duration-200 ${
+                saved
+                  ? "bg-blue-600 text-white shadow-md"
+                  : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+              }`}
+            >
+              <Bookmark size={18} fill={saved ? "currentColor" : "none"} />
+              <span className="text-sm sm:text-base">
+                {saved ? "Saved" : "Save"}
+              </span>
+            </button>
+
+            <button
+              onClick={handleShare}
+              className="flex items-center gap-2 px-5 py-2 rounded-full bg-gray-100 text-gray-700 hover:bg-gray-200 transition"
+            >
+              <Share2 size={18} />
+              <span className="text-sm sm:text-base">Share</span>
+            </button>
+          </div>
+
+          {/* Author Bio */}
+          {blog.author && (
+            <div className="mt-8 p-5 bg-gray-50 rounded-xl">
+              <div className="flex flex-col sm:flex-row gap-4">
+                {blog.author.profilePic ? (
+                  <img
+                    src={blog.author.profilePic}
+                    alt={blog.author.name}
+                    className="h-14 w-14 rounded-full object-cover mx-auto sm:mx-0"
+                  />
+                ) : (
+                  <div className="flex h-14 w-14 items-center justify-center rounded-full bg-blue-600 text-white text-lg font-semibold mx-auto sm:mx-0">
+                    {blog.author.name?.charAt(0) || "A"}
+                  </div>
+                )}
+                <div className="flex-1 text-center sm:text-left">
+                  <h3 className="text-lg font-bold text-gray-900 mb-1">
+                    {blog.author.name}
+                  </h3>
+                  <p className="text-sm text-gray-600 leading-relaxed mb-3 break-words">
+                    {blog.author.bio ||
+                      "Passionate writer sharing insights and stories about technology, life, and everything in between."}
+                  </p>
+                  <div className="flex gap-3 justify-center sm:justify-start">
+                    <button className="inline-flex items-center gap-2 px-4 py-1.5 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700 transition">
+                      <Mail size={14} />
+                      Subscribe
+                    </button>
+                    <button className="inline-flex items-center gap-2 px-4 py-1.5 border border-gray-300 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-50 transition">
+                      <User size={14} />
+                      View Profile
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
+          )}
+
+          {/* Subscribe Section */}
+          <div className="mt-8 mb-8">
+            <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl p-5 text-center">
+              <Bell className="w-8 h-8 text-blue-600 mx-auto mb-3" />
+              <h3 className="text-lg font-bold text-gray-900 mb-2">
+                Never miss a story
+              </h3>
+              <p className="text-sm text-gray-600 mb-4 max-w-md mx-auto break-words">
+                Get the best stories from{" "}
+                <span className="font-semibold text-blue-600">
+                  {blog.author?.name || "this writer"}
+                </span>{" "}
+                delivered straight to your inbox
+              </p>
+              <div className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
+                <input
+                  type="email"
+                  placeholder="Enter your email address"
+                  className="flex-1 px-4 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+                <button
+                  onClick={handleSubscribe}
+                  className={`px-5 py-2 rounded-lg font-medium transition-all duration-200 text-sm ${
+                    subscribed
+                      ? "bg-green-600 text-white"
+                      : "bg-blue-600 text-white hover:bg-blue-700"
+                  }`}
+                >
+                  {subscribed ? "Subscribed! ✓" : "Subscribe"}
+                </button>
+              </div>
+            </div>
           </div>
-        )}
-      </div>
+        </div>
 
-      {/* Floating Action Button - Mobile Only */}
-      <div
-        className={`fixed bottom-5 right-5 z-40 transition-all duration-300 ${
-          showFAB
-            ? "translate-y-0 opacity-100"
-            : "translate-y-20 opacity-0 pointer-events-none"
-        }`}
-      >
-        <div className="flex flex-col gap-2">
-          <button
-            onClick={handleLike}
-            className={`p-3 rounded-full shadow-xl transition-all duration-200 ${
-              liked
-                ? "bg-red-500 text-white"
-                : "bg-white text-gray-700 shadow-lg"
-            }`}
-          >
-            <Heart size={20} fill={liked ? "currentColor" : "none"} />
-          </button>
-
-          <button
-            onClick={handleSave}
-            className={`p-3 rounded-full shadow-xl transition-all duration-200 ${
-              saved
-                ? "bg-purple-600 text-white"
-                : "bg-white text-gray-700 shadow-lg"
-            }`}
-          >
-            <Bookmark size={20} fill={saved ? "currentColor" : "none"} />
-          </button>
-
-          <button
-            onClick={handleShare}
-            className="p-3 rounded-full shadow-xl bg-white text-gray-700 shadow-lg"
-          >
-            <Share2 size={20} />
-          </button>
-
+        {/* Floating Action Button */}
+        <div
+          className={`fixed bottom-6 right-6 z-40 transition-all duration-300 ${
+            showFAB
+              ? "translate-y-0 opacity-100"
+              : "translate-y-20 opacity-0 pointer-events-none"
+          }`}
+        >
           <button
             onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-            className="p-3 rounded-full shadow-xl bg-purple-600 text-white shadow-lg"
+            className="p-3 rounded-full bg-blue-600 text-white shadow-lg hover:shadow-xl transition-all hover:bg-blue-700"
           >
             <ChevronUp size={20} />
           </button>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 
