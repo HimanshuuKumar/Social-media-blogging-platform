@@ -23,7 +23,7 @@ const UpdateProfile = () => {
     const fetchUser = async () => {
       try {
         const token = localStorage.getItem("token");
-        const res = await axios.get("http://localhost:4000/api/users/me", {
+        const res = await axios.get("https://internship-resume.onrender.com/api/users/me", {
           headers: { Authorization: `Bearer ${token}` },
         });
 
@@ -65,7 +65,7 @@ const UpdateProfile = () => {
       data.append("bio", form.bio);
       if (profilePic) data.append("profilePic", profilePic);
 
-      await axios.put("http://localhost:4000/api/users/me", data, {
+      await axios.put("https://internship-resume.onrender.com/api/users/me", data, {
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "multipart/form-data",
