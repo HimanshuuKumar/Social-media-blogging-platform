@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback, useMemo } from "react";
 import axios from "axios";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import {
   Search,
   Heart,
@@ -16,6 +16,7 @@ import {
   X,
   PenTool,
   ArrowRight,
+  Users,
 } from "lucide-react";
 
 // ============================================
@@ -172,7 +173,7 @@ const getReadingTime = (content) => {
 const getRandomNumber = (max) => Math.floor(Math.random() * max);
 
 // ============================================
-// 5. COMPONENTS (All in one file)
+// 5. COMPONENTS
 // ============================================
 
 // Loading Skeleton
@@ -652,7 +653,6 @@ const HomePage = () => {
     setPage(p => p + 1);
   }, []);
 
-  // Reset page on filter change
   useEffect(() => {
     setPage(1);
   }, [searchTerm, selectedTag]);
@@ -663,7 +663,6 @@ const HomePage = () => {
   }, []);
 
   const handleLike = useCallback(async (blogId, isLiked) => {
-    // Optimistic update - just for UI demo
     console.log("Like toggled:", blogId, isLiked);
   }, []);
 
@@ -768,7 +767,7 @@ const HomePage = () => {
         onClose={() => setIsMobileFilterOpen(false)}
       />
 
-      <style jsx>{`
+      <style>{`
         @keyframes slide-up {
           from { transform: translateY(100%); }
           to { transform: translateY(0); }
